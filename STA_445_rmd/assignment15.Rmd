@@ -1,0 +1,179 @@
+---
+title: "assignment15"
+author: "Noah Plant"
+date: "2024-11-09"
+output: pdf_document
+---
+
+
+### Exercise 2 {-}
+
+Using the `datasets::trees` data, complete the following. This question refreshes create a linear model, graphing the linear model, and introduces using some LaTeX expressions on the graph.
+
+**a)** Create a regression model for $y=$ `Volume` as a function of $x=$ `Height`.
+
+```{r}
+
+
+library(dplyr)
+library(ggplot2)
+library(broom)
+
+
+myData<-datasets::trees
+
+myData.model<-lm(Volume ~ Height ,data=myData)
+
+
+
+
+
+```
+
+
+**b)** Display the `summary` of the  model to view the y-intercept and slope of the regression line.
+
+```{r}
+
+summary(myData.model)
+
+```
+
+**c)** Using `ggplot2`, create a scatter plot of Volume vs Height. 
+
+```{r}
+
+plot.c<-myData%>%ggplot(aes(y=Volume,x=Height))+geom_point()
+
+plot.c
+
+
+```
+
+
+**d)** Color the scatter using the `Girth` variable.
+
+```{r}
+
+plot.d<-myData%>%ggplot(aes(y=Volume,x=Height))+geom_point(aes(color=Girth))
+plot.d
+
+```
+
+
+**e)** Modify the color scheme using a RColorBrewer palette.
+
+```{r}
+
+plot.e<-plot.d+scale_color_distiller(palette='Spectral')
+
+plot.e
+
+```
+
+
+**f)** Create a nice white filled rectangle to add text information. The following might be useful.
+
+```{r}
+
+plot.f<-plot.e+annotate('rect', xmin=50, xmax=68, ymin=58, ymax=68,
+         fill='white', color='black')
+
+
+plot.f
+```
+
+**g)** Use the `broom` package to extract the coefficients of the best-fit line. Add this information as an annotation to the graph, which should follow a form that looks like $\hat{y}_i = (INTERCEPT) + (SLOPE)* x_i$. Place the annotation within the white text box.
+
+```{r}
+
+library(latex2exp)
+cleanModel<-broom::tidy(myData.model)
+
+intercept<-cleanModel[1,2]
+slope<-cleanModel[2,2]
+
+
+plot.g<-plot.f+annotate("text",x=59,y=61,label=latex2exp::TeX('$\\hat{y}_i = (-87.12361	) + (1.54335	)* x_i$')  )
+
+
+plot.g
+
+```
+
+
+**h)** Use the `broom` package to extract the coefficient of determination $r^2$ from the model. Add the annotation to your graph, which should look something like $R^2 = (VALUE)$
+
+```{r}
+
+rsquared<-broom::glance(myData.model)
+
+rsquared<-rsquared[1]
+
+plot.h<-plot.g+annotate('text',x=59,y=65,label=latex2exp::TeX('$R^2 = (0.3579026	)$'))
+
+plot.h
+
+```
+
+
+**i)** Add the regression line in red. There are several ways to do this.
+
+```{r}
+
+line<-broom::augment(myData.model, trees)
+
+line
+
+plot.i<-line%>%ggplot(aes(y=Volume,x=Height))+
+  geom_point(aes(color=Girth))+
+  geom_line(aes(y=.fitted))+
+  scale_color_distiller(palette='Spectral')+
+  annotate('rect', xmin=50, xmax=68, ymin=58, ymax=68,
+         fill='white', color='black')+
+  annotate("text",x=59,y=61,
+           label=latex2exp::TeX('$\\hat{y}_i = (-87.12361	) + (1.54335	)* x_i$'))+
+  annotate('text',x=59,y=65,label=latex2exp::TeX('$R^2 = (0.3579026	)$'))
+  
+
+  
+  
+plot.i
+
+
+```
+
+
+**j)** Properly label the axes of the graph.
+
+```{r}
+
+plot.j<-plot.i+ labs(x= "Height (ft)",y="Volume (ft^3)",color="Girth (in)")+theme(
+    # Change x-axis font type
+    axis.text.x = element_text(size = 12, face = "bold", family = "serif"),
+    # Change y-axis font type
+    axis.text.y = element_text(size = 12, face = "bold", family = "serif"),
+    # Change x-axis title font type
+    axis.title.x = element_text(size = 14, face = "bold"),
+    # Change y-axis title font type
+    axis.title.y = element_text(size = 14, face = "bold")
+  )
+  
+plot.j
+  
+
+
+
+```
+
+
+**k)** Add a descriptive title to the graph.
+
+```{r}
+
+plot.k<-plot.j+labs(title="Black Cherry Tree Dimensions")
+
+plot.k
+
+```
+

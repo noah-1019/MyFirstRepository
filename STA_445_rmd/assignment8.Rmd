@@ -1,0 +1,231 @@
+---
+title: "assignment8"
+author: "Noah Plant"
+date: "2024-09-30"
+output: pdf_document
+---
+
+## Excersise 1
+Create a vector of three elements (2,4,6) and name that vector `vec_a`. Create a second vector, `vec_b`, that contains (8,10,12). Add these two vectors together and name the result `vec_c`.
+
+```{r}
+vec_a=c(2,4,6)
+
+vec_b=c(8,10,12)
+
+vec_c=vec_a+vec_b
+
+vec_c
+```
+
+## Excersise 2
+Create a vector, named `vec_d`, that contains only two elements (14,20). Add this vector to `vec_a`. What is the result and what do you think R did (look up the recycling rule using Google)? What is the warning message that R gives you?
+
+```{r}
+
+vec_d=c(14,20)
+
+vec_a+vec_d
+
+```
+
+It looks like in this instance R added up the vectors element wise. And for the elements that C had that D didnt, R just did nothing.
+
+## Excersise 3
+Next add 5 to the vector vec_a. What is the result and what did R do? Why doesn't in give you a warning message similar to what you saw in the previous problem?
+
+```{r}
+vec_a+5
+
+```
+
+In this instance R treated 5 like the vector (5,5,5), and did not give a warning. This is because R treats the scalar object 5 differently then a vector object.
+
+## Excersise 5
+Generate the vector of even numbers $\left\{ 2,4,6,\dots,20\right\}$ 
+    a) Using the seq() function and 
+    
+```{r}
+
+vec_5a=seq(from=2, to=20, by=2)
+
+vec_5a
+
+```
+    
+    
+  b) Using the a:b shortcut and some subsequent algebra. *Hint: Generate the vector 1-10 and then multiple it by 2*.
+    
+```{r}
+
+vec_5b<-1:10
+
+vec_5b<-vec_5b*2
+
+vec_5b
+
+```
+
+
+## Excersise 6
+Generate a vector of 21 elements that are evenly placed between 0 and 1 using the `seq()` command and name this vector `x`. 
+
+```{r}
+
+x<-seq(0,1,length.out=21)
+x
+
+```
+
+
+## Excersise 8
+Generate the vector $\left\{ 2,2,2,2,4,4,4,4,8,8,8,8\right\}$
+using the `rep()` command. You might need to check the help file for rep() to see all of the options that rep() will accept. In particular, look at the optional argument `each=`.
+  
+```{r}
+
+vec_8<-c(2,4,8)
+
+vec_8<-rep(vec_8,each=4)
+vec_8
+
+```
+  
+## Excersise 9
+Create and manipulate a data frame.
+    a) Create a `data.frame` named `my.trees` that has the following columns:
+        + Girth = {8.3, 8.6, 8.8, 10.5, 10.7, 10.8, 11.0}
+        + Height= {70, 65, 63, 72, 81, 83, 66}
+        + Volume= {10.3, 10.3, 10.2, 16.4, 18.8, 19.7, 15.6}
+        
+        
+        
+```{r}
+
+my.trees<-data.frame(
+  Girth=c(8.3, 8.6, 8.8, 10.5, 10.7, 10.8, 11.0),
+  Height=c(70, 65, 63, 72, 81, 83, 66),
+  Volume=c(10.3, 10.3, 10.2, 16.4, 18.8, 19.7, 15.6)
+)
+
+my.trees
+
+
+```
+
+
+        
+  b) Without using `dplyr` functions, extract the third observation (i.e. the third row)
+    
+```{r}
+  
+my.trees[3,]
+
+```
+    
+    
+  c) Without using `dplyr` functions, extract the Girth column referring to it by name (don't use whatever order you placed the columns in).
+    
+```{r}
+
+my.trees[,'Girth']
+
+```
+    
+  d) Without using `dplyr` functions, print out a data frame of all the observations *except* for the fourth observation. (i.e. Remove the fourth observation/row.)
+    
+```{r}
+
+my.trees2<-my.trees[-c(4),]
+
+my.trees2
+
+```
+    
+    
+  e) Without using `dplyr` functions, use the `which()` command to create a vector of row indices that have a `girth` greater than 10. Call that vector `index`.
+    
+```{r}
+
+index<-which(my.trees$Girth>10)
+
+
+
+```
+    
+    
+  f) Without using `dplyr` functions, use the `index` vector to create a small data set with just the large girth trees.
+    
+```{r}
+
+my.trees[index,]
+
+```
+    
+  g) Without using `dplyr` functions, use the `index` vector to create a small data set with just the small girth trees.
+    
+```{r}
+my.trees[-c(index),]
+```
+    
+    
+    
+    
+## Excersise 12
+
+The following code creates a `data.frame` and then has two different methods for removing the rows with `NA` values in the column `Grade`. Explain the difference between the two.
+    ```{r, eval=FALSE}
+    df <- data.frame(name= c('Alice','Bob','Charlie','Daniel'),
+                     Grade = c(6,8,NA,9))
+    
+    df[ -which(  is.na(df$Grade) ), ]
+    
+    
+    df[  which( !is.na(df$Grade) ), ]
+    ```
+    
+    
+In the first line, the program is finding all the rows without a grade and displaying all the rows except that one.
+
+In the second line the program is finding all the rows with a grade and displaying those rows. 
+
+The difference here is subtle, one line uses R's - feature to basically remove rows, while the second line is using the not operator ! to select for the lines that do have grades.
+
+## Excersise 14
+Create and manipulate a list.
+    a) Create a list named my.test with elements
+        + x = c(4,5,6,7,8,9,10)
+        + y = c(34,35,41,40,45,47,51)
+        + slope = 2.82
+        + p.value = 0.000131
+        
+```{r}
+
+  x = c(4,5,6,7,8,9,10)
+  y = c(34,35,41,40,45,47,51)
+  slope = 2.82
+  p.value = 0.000131
+  
+  my.test<-list(x.val=x,y.val=y,slope=slope,p.val=p.value)
+  
+  str(my.test)
+
+```
+    
+    
+    b) Extract the second element in the list.
+    
+```{r}
+
+my.test[2]
+
+```
+    
+    c) Extract the element named `p.value` from the list.
+    
+```{r}
+
+my.test['p.val']
+
+```
+    

@@ -1,0 +1,189 @@
+---
+title: "assignment5"
+author: "Noah Plant"
+date: "2024-10-28"
+output: pdf_document
+---
+### Exercise 1 {-}
+
+Convert the following to date or date/time objects.
+
+```{r}
+
+library(tidyverse)
+library(lubridate)
+library(mosaicData)
+
+```
+
+
+**a)** September 13, 2010.
+
+```{r}
+
+
+mdy('September 13, 2010')
+
+
+```
+
+
+**b)** Sept 13, 2010.
+
+```{r}
+
+as.Date("Sept 13, 2010",format='%b %d, %Y') 
+
+mdy("Sept 13, 2010")
+
+```
+
+
+**c)** Sep 13, 2010.
+
+```{r}
+
+mdy("Sep 13, 2010")
+
+```
+
+
+**d)** S 13, 2010. Comment on the month abbreviation needs.
+
+```{r}
+
+mdy("S 13, 2010")
+
+
+
+```
+
+The date must be abbreviated to 3 letters, spelled out completely or represented by a 2 digit number. There is no way to format the month as a single letter as that would cause confusion I imagine.
+
+**e)** 07-Dec-1941.
+
+```{r}
+
+dmy("07-Dec-1941")
+
+```
+
+
+**f)** 1-5-1998. Comment on why you might be wrong.
+
+```{r}
+mdy("1-5-1998")
+dmy("1-5-1998")
+
+
+```
+
+I may be wrong in my date making because I have no way of knowing whether the date is supplied in day month year or year month day.
+
+**g)** 21-5-1998. Comment on why you know you are correct.
+
+```{r}
+
+dmy("21-5-1998")
+
+```
+
+I know I am right because if I try to parse the data in any other way I get an error. Also there is no way this date can be written in mdy because there are only 12 months in a year.
+
+**h)** 2020-May-5 10:30 am
+
+```{r}
+ymd_hm('2020-May-5 10:30 am')
+
+```
+
+
+**i)** 2020-May-5 10:30 am PDT (ex Seattle)
+
+```{r}
+
+ymd_hm('2020-May-5 10:30 am PDT')
+
+ymd_hm('2020-May-5 10:30 am PDT',tz="America/Los_Angeles")
+
+```
+The time zone does not parse unless I include the tz="PDT" part of the code. Even then if I do that it does not register. I have to include the olson name which is America/Los_Angeles
+
+**j)** 2020-May-5 10:30 am AST (ex Puerto Rico)
+
+
+```{r}
+
+ymd_hm("2020-May-5 10:30 am AST",tz="America/Puerto_Rico")
+
+```
+
+
+### Exercise 3 {-}
+
+Suppose you have arranged for a phone call to be at 3 pm on May 8, 2025 at Arizona time. However, the recipient will be in Auckland, NZ. What time will it be there? 
+
+```{r}
+  
+arizona<-mdy_hm('May 8, 2025 3:00 pm',tz='US/Arizona')
+
+auckland<-with_tz(arizona,tz="Pacific/Auckland")
+
+auckland
+
+```
+
+
+
+
+
+### Exercise 5 {-}
+
+It turns out there is some interesting periodicity regarding the number of births on particular days of the year.
+
+**a)** Using the `mosaicData` package, load the data set `Births78` which records the number of children born on each day in the United States in 1978. Because this problem is intended to show how to calculate the information using the `date`, remove all the columns *except* `date` and `births`.
+
+```{r}
+data<-mosaicData::Births78
+
+data.2<-select(data,date,births)
+
+head(data.2)
+
+```
+
+
+**b)** Graph the number of `births` vs the `date` with date on the x-axis. What stands out to you? Why do you think we have this trend?
+
+```{r}
+
+library(ggplot2)
+
+ggplot(data=data.2, aes(x=date,y=births) )+
+  geom_point()
+
+```
+
+
+**c)** To test your assumption, we need to figure out the what day of the week each observation is. Use `dplyr::mutate` to add a new column named `dow` that is the day of the week (Monday, Tuesday, etc). This calculation will involve some function in the `lubridate` package and the `date` column.
+
+```{r}
+
+data.2<- data.2 %>% mutate(dow=(wday(date,label=TRUE, abbr=FALSE)))
+
+head(data.2)
+
+```
+
+
+**d)** Plot the data with the point color being determined by the day of the week variable.
+
+
+
+```{r}
+
+ggplot(data=data.2, aes(x=date,y=births,color=dow) )+
+  geom_point()
+
+```
+
